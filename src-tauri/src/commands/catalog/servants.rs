@@ -251,7 +251,7 @@ fn variant_recognition_names(
     fn alias_name(alias: &ServantNameAlias, server: Server) -> Option<&str> {
         match server {
             Server::Jp => alias.name_jp.as_deref(),
-            Server::Cn => alias.name_cn.as_deref(),
+            Server::Cn | Server::Tw => alias.name_cn.as_deref(),
         }
     }
     let mut names = Vec::new();
