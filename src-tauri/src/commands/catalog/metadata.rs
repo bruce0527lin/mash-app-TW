@@ -155,7 +155,7 @@ pub(crate) fn servant_id_to_names_index(server: Server) -> &'static HashMap<u32,
     static CN_INDEX: OnceLock<HashMap<u32, Vec<String>>> = OnceLock::new();
     let index = match server {
         Server::Jp => &JP_INDEX,
-        Server::Cn => &CN_INDEX,
+        Server::Cn | Server::Tw => &CN_INDEX,
     };
     index.get_or_init(|| {
         let mut map: HashMap<u32, Vec<String>> = HashMap::new();
@@ -170,7 +170,7 @@ pub(crate) fn servant_id_to_names_index(server: Server) -> &'static HashMap<u32,
                         }
                     }
                 }
-                Server::Cn => {
+                Server::Cn | Server::Tw => {
                     let cn = s.name_cn_server.as_deref().unwrap_or(&s.name_cn);
                     push_unique_nonempty(names, cn);
                     for alias in &s.over_write_servant_names {
@@ -242,7 +242,7 @@ pub(crate) fn servant_name_overlaps_other_id(meta: &ServantMetadata, server: Ser
 fn localized_variant_name(servant: &ServantInfo, server: Server) -> String {
     match server {
         Server::Jp => servant.name_jp.trim().to_string(),
-        Server::Cn => servant
+        Server::Cn | Server::Tw => servant
             .name_cn_server
             .as_deref()
             .unwrap_or(&servant.name_cn)
@@ -254,14 +254,14 @@ fn localized_variant_name(servant: &ServantInfo, server: Server) -> String {
 fn localized_variant_names(servant: &ServantInfo, server: Server) -> Vec<String> {
     match server {
         Server::Jp => servant.recognition_names_jp.clone(),
-        Server::Cn => servant.recognition_names_cn.clone(),
+        Server::Cn | Server::Tw => servant.recognition_names_cn.clone(),
     }
 }
 
 fn localized_variant_np_names(servant: &ServantInfo, server: Server) -> Vec<String> {
     match server {
         Server::Jp => servant.recognition_np_names_jp.clone(),
-        Server::Cn => servant.recognition_np_names_cn.clone(),
+        Server::Cn | Server::Tw => servant.recognition_np_names_cn.clone(),
     }
 }
 
@@ -428,7 +428,7 @@ pub(crate) fn load_servant_metadata(
     let servant_dir = assets_dir.join(id.to_string());
     let cn_path = servant_dir.join("servant-cn.json");
     let jp_path = servant_dir.join("servant.json");
-    let path = if server == Server::Cn && cn_path.is_file() {
+    let path = if matches!(server, Server::Cn | Server::Tw) && cn_path.is_file() {
         cn_path
     } else {
         jp_path
@@ -467,8 +467,8 @@ pub(crate) fn load_servant_metadata(
 
     let (name, np_names) = match server {
         Server::Jp => (raw_name, raw_np_names),
-        Server::Cn if path.ends_with("servant-cn.json") => (raw_name, raw_np_names),
-        Server::Cn => {
+        Server::Cn | Server::Tw if path.ends_with("servant-cn.json") => (raw_name, raw_np_names),
+        Server::Cn | Server::Tw => {
             let cn_name = localize_servant_name_by_id(id, &raw_name);
             let cn_nps = localize_np_names(&raw_np_names);
             let dropped = raw_np_names.len().saturating_sub(cn_nps.len());
