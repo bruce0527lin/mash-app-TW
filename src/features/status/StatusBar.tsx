@@ -855,7 +855,7 @@ export function StatusBar({
   }, [onLogEntry, onOperationLogOpenChange, pollAdb]);
 
   const handleServerChange = useCallback((value: string) => {
-    if (value !== "JP" && value !== "CN") return;
+    if (value !== "JP" && value !== "CN" && value !== "TW") return;
     const next = value as Server;
     const previous = server;
     // Optimistic update; revert + log on backend rejection (e.g. the
@@ -1204,7 +1204,7 @@ export function StatusBar({
             color="gray"
             className="status-server-btn"
             disabled={runnerRunning}
-            onClick={() => handleServerChange(server === "JP" ? "CN" : "JP")}
+            onClick={() => handleServerChange(server === "JP" ? "CN" : server === "CN" ? "TW" : "JP")}
           >
             <Text size="1">{SERVER_LABELS[server]}</Text>
           </Button>
