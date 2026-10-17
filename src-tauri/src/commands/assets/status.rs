@@ -150,7 +150,7 @@ pub(crate) fn self_check_status_for_app(app: &tauri::AppHandle) -> Result<SelfCh
         app_assets_version: assets.app_assets_version,
         servants: scan_self_check_asset_group(&assets_root.join("servants")),
         ces: scan_self_check_asset_group(&assets_root.join("ces")),
-        templates: [Server::Jp, Server::Cn]
+        templates: [Server::Jp, Server::Cn, Server::Tw]
             .into_iter()
             .map(|server| {
                 templates::check_templates(
