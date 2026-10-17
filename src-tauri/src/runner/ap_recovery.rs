@@ -36,7 +36,7 @@ pub(crate) fn ap_recovery_list_label_probes(
 
     match server {
         Server::Jp => JP_PROBES,
-        Server::Cn => CN_PROBES,
+        Server::Cn | Server::Tw => CN_PROBES,
     }
 }
 
