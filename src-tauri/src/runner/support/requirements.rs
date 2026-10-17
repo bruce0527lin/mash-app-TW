@@ -106,7 +106,7 @@ pub(crate) fn support_level_wait_diagnostic(
 }
 
 pub(crate) fn support_level_filtering_enabled(server: Server) -> bool {
-    matches!(server, Server::Jp | Server::Cn)
+    matches!(server, Server::Jp | Server::Cn | Server::Tw)
 }
 
 pub(crate) fn support_score_filter_mismatch(
