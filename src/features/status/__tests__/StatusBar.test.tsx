@@ -290,7 +290,7 @@ describe("StatusBar", () => {
     await user.click(screen.getByRole("button", { name: "国服" }));
 
     await waitFor(() => {
-      expect(invoke).toHaveBeenCalledWith("set_server", { value: "JP" });
+      expect(invoke).toHaveBeenCalledWith("set_server", { value: "TW" });
     });
     // After the rejection settles, the button snaps back to the
     // previous value (CN) so the UI stays consistent with backend state.

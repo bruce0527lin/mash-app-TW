@@ -17,6 +17,7 @@ use std::str::FromStr;
 pub enum Server {
     Jp,
     Cn,
+    Tw,
 }
 
 impl Default for Server {
@@ -30,6 +31,7 @@ impl Server {
         match self {
             Self::Jp => "com.aniplex.fategrandorder",
             Self::Cn => "com.bilibili.fatego",
+            Self::Tw => "com.xiaomeng.fategrandorder",
         }
     }
 
@@ -38,7 +40,9 @@ impl Server {
     pub fn dir_token(&self) -> &'static str {
         match self {
             Self::Jp => "jp",
-            Self::Cn => "cn",
+            // Taiwan currently reuses CN CV templates as a provisional fallback;
+            // dedicated TW templates must replace this before claiming full support.
+            Self::Cn | Self::Tw => "cn",
         }
     }
 }
@@ -48,6 +52,7 @@ impl fmt::Display for Server {
         match self {
             Self::Jp => write!(f, "JP"),
             Self::Cn => write!(f, "CN"),
+            Self::Tw => write!(f, "TW"),
         }
     }
 }
@@ -58,6 +63,7 @@ impl FromStr for Server {
         match s.to_ascii_uppercase().as_str() {
             "JP" => Ok(Self::Jp),
             "CN" => Ok(Self::Cn),
+            "TW" => Ok(Self::Tw),
             other => Err(format!("unknown server: {other}")),
         }
     }
@@ -71,6 +77,7 @@ mod package_tests {
     fn game_package_follows_selected_server() {
         assert_eq!(Server::Cn.game_package(), "com.bilibili.fatego");
         assert_eq!(Server::Jp.game_package(), "com.aniplex.fategrandorder");
+        assert_eq!(Server::Tw.game_package(), "com.xiaomeng.fategrandorder");
     }
 }
 
