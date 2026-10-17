@@ -13,6 +13,7 @@ pub(super) fn unknown_screen_wait_message(
 ) -> String {
     let server_label = match server {
         Server::Cn => "国服",
+        Server::Tw => "台服",
         Server::Jp => "日服",
     };
     format!("等待识别画面[{server_label}]... ({unknown_count}/{timeout})")
