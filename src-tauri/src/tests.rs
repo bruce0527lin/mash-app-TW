@@ -3047,13 +3047,18 @@ fn server_default_is_jp() {
 
 #[test]
 fn server_display_and_dir_token_match_serde() {
-    for s in [Server::Jp, Server::Cn] {
+    for s in [Server::Jp, Server::Cn, Server::Tw] {
         // Display + dir_token must agree with the serde tag (the
         // value the frontend sees) so JSON, file paths, and stderr
         // logs all line up.
         let serialized = serde_json::to_string(&s).unwrap();
         assert_eq!(serialized, format!("\"{}\"", s));
-        assert_eq!(serialized.to_lowercase().trim_matches('"'), s.dir_token());
+        if s != Server::Tw {
+            assert_eq!(serialized.to_lowercase().trim_matches('"'), s.dir_token());
+        } else {
+            // TW temporarily shares CN templates until native TW assets are supplied.
+            assert_eq!(s.dir_token(), "cn");
+        }
     }
 }
 
@@ -3067,6 +3072,8 @@ fn server_from_str_round_trips_both_cases() {
         ("Jp", Server::Jp),
         ("CN", Server::Cn),
         ("cn", Server::Cn),
+        ("TW", Server::Tw),
+        ("tw", Server::Tw),
     ] {
         assert_eq!(Server::from_str(input).unwrap(), expected, "input={input}");
     }
@@ -3078,6 +3085,7 @@ fn server_serde_uses_uppercase_tag() {
     let value: Server = serde_json::from_str("\"CN\"").unwrap();
     assert_eq!(value, Server::Cn);
     assert!(serde_json::from_str::<Server>("\"cn\"").is_err());
+    assert_eq!(serde_json::from_str::<Server>("\"TW\"").unwrap(), Server::Tw);
 }
 
 // --- Localization indices -----------------------------------------
